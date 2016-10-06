@@ -9,6 +9,8 @@
 
 #include "cube.h"
 
+#define pnt 0.5f
+
 Cube::Cube(){
 	this->vertices_cube[] = {
 		pnt, pnt, 0.0f,
@@ -26,9 +28,14 @@ Cube::Cube(){
 }
 
 GLFloat Cube::getVertices(){
-	return this->vertices_cube;
+	return this->vertices_cube[];
 }
 
+GLuint Cube::getSizeofIndices(){
+	GLuint taille = sizeof(this->indices_cube[]);
+	std::cout << "taille: " << taille <<std::endl;
+	return taille;
+}
 GLuint Cube::getIndices(){
-	return this->indices_cube;
+	return this->indices_cube[];
 }

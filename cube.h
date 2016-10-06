@@ -12,6 +12,9 @@
 
 class Cube
 {
+	private:
+		GLfloat vertices_cube[];
+		GLuint indices_cube[];
 	public:
 	  	// The program ID
 	//	GLuint Program;
@@ -20,11 +23,9 @@ class Cube
 	  	// Use the program
 	// 	void Use();
 		Cube();
-		GLFloat getVertices();
+		GLfloat getVertices();
 		GLuint getIndices();
-	private:
-		GLFloat vertices_cube[];
-		GLuint indices_cube[];
+		GLuint getSizeofIndices();
 };
   
 #endif

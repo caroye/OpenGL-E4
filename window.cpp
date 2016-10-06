@@ -19,7 +19,7 @@
 #include <GLFW/glfw3.h>
 
 #include "shader.h"
-
+#include "cube.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -68,35 +68,40 @@ int main(){
 		     pnt, -pnt, 0.0f,
 		     0.0f,  pnt, 0.0f
 		     //*/
-		     //carré
+		     //*carré
 		     pnt, pnt, 0.0f,
 		     pnt, -pnt, 0.0f,
 		     -pnt, -pnt, 0.0f,
 		     -pnt, pnt, 0.0f,
 		     0.0f, 1.0f, 0.0f,
 
-		}; 
+		}; //*/
 
-		//pour le carré
+		//*pour le carré 
 		GLuint indices[] = {  // Note that we start from 0!
 		    0, 1, 3,   // First Triangle
 		    1, 2, 3,    // Second Triangle
 		    3, 0, 4
-		};
+		};//*/
+		Cube monCube;
+
+		//GLfloat vertices_triangles[] = monCube.getVertices();
+		GLuint tailleI = monCube.getSizeofIndices();
+		//GLuint indices[tailleI] = monCube.getIndices();
 		GLuint EBO;
 		glGenBuffers(1, &EBO);		
 
 
-		//create vertex
+		///create vertex
 		GLuint VBO;
 		glGenBuffers(1, &VBO);
 		////copie vertices array in buffere
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_triangle), vertices_triangle, GL_STATIC_DRAW);
-
+//*/
 		
 
-		Shader monShader("/home/caroye/Documents/OpenGL/VertexShader.vs","/home/caroye/Documents/OpenGL/FragmentShader.frag");
+		Shader monShader("/home/caroye/Documents/OpenGL/OpenGL-E4/VertexShader.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/FragmentShader.frag");
 
 		//liaison des attributs du vertex
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
