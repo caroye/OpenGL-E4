@@ -1,4 +1,4 @@
-CFLAGS= -I/usr/include/GL -I/usr/include/libdrm -Wall
+CFLAGS= -I/usr/include/GL -I/usr/include/libdrm -Wall -std=c++11
 LIBS= -lGLEW -lGLU -lGL -lglfw 
 
 

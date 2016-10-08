@@ -12,6 +12,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -61,14 +62,14 @@ int main(){
 
 	//create forme 
 	//rendu =========================================================================
-		GLfloat vertices_triangle[] = {
+		//GLfloat vertices_triangle[] = {
 			//triangle 
 			/*
 		    -pnt, -pnt, 0.0f,
 		     pnt, -pnt, 0.0f,
 		     0.0f,  pnt, 0.0f
 		     //*/
-		     //*carré
+		     /*carré
 		     pnt, pnt, 0.0f,
 		     pnt, -pnt, 0.0f,
 		     -pnt, -pnt, 0.0f,
@@ -77,7 +78,7 @@ int main(){
 
 		}; //*/
 
-		//*pour le carré 
+		/*pour le carré 
 		GLuint indices[] = {  // Note that we start from 0!
 		    0, 1, 3,   // First Triangle
 		    1, 2, 3,    // Second Triangle
@@ -86,13 +87,15 @@ int main(){
 		Cube monCube;
 
 		//GLfloat vertices_triangles[] = monCube.getVertices();
-		GLuint tailleI = monCube.getSizeofIndices();
+		//GLuint tailleI = monCube.getSizeofIndices();
+		//std::vector<GLuint> indices(tailleI);
+		//std::vector<GLuint> indices = monCube.getIndices();
 		//GLuint indices[tailleI] = monCube.getIndices();
-		GLuint EBO;
-		glGenBuffers(1, &EBO);		
+		//GLuint EBO;
+		//glGenBuffers(1, &EBO);		
 
 
-		///create vertex
+		/*//create vertex
 		GLuint VBO;
 		glGenBuffers(1, &VBO);
 		////copie vertices array in buffere
@@ -103,7 +106,7 @@ int main(){
 
 		Shader monShader("/home/caroye/Documents/OpenGL/OpenGL-E4/VertexShader.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/FragmentShader.frag");
 
-		//liaison des attributs du vertex
+		/*//liaison des attributs du vertex
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0); 
 
@@ -116,13 +119,13 @@ int main(){
 		glBindVertexArray(VAO);
 		    // 2. Copy our vertices array in a buffer for OpenGL to use
 		  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);//ELEMENT , VBO->EBO
-		  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); //ELEMENT, vertices_triangle ->indices
+		  glBufferData(GL_ELEMENT_ARRAY_BUFFER, /*sizeof(indices)*/ /*tailleI, indices, GL_STATIC_DRAW); //ELEMENT, vertices_triangle ->indices
 		    // 3. Then set our vertex attributes pointers
 		    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 		    glEnableVertexAttribArray(0);  
 		//4. Unbind the VAO
 		glBindVertexArray(0);
-		// ..:: Drawing code (in Game loop) :: ..
+		// ..:: Drawing code (in Game loop) :: ..*/
 
 
 	//reste ouverte tant que pas choisi de cloturer
@@ -133,10 +136,10 @@ int main(){
 		// 5. Draw the object
 		monShader.Use();
 		//glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
+		//glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		//glBindVertexArray(0);
 
 		//======================================================================================
 		//échange les buffers
@@ -144,9 +147,10 @@ int main(){
 	}
 
 	 // Properly de-allocate all resources once they've outlived their purpose
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+    /*glDeleteVertexArrays(1, &VAO);
+    //glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);*/
+    monCube.deleteVertexBuffer();
 
 	glfwTerminate();
 	return 0;

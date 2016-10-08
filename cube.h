@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <vector>
   
 #include <GL/glew.h> // Include glew to get all the required OpenGL headers
 
@@ -12,9 +13,10 @@
 
 class Cube
 {
-	private:
-		GLfloat vertices_cube[];
-		GLuint indices_cube[];
+	/*private:
+		std::vector<GLfloat> vertices_cube[3*5];
+		std::vector<GLuint> indices_cube[3*3];
+		
 	public:
 	  	// The program ID
 	//	GLuint Program;
@@ -23,9 +25,19 @@ class Cube
 	  	// Use the program
 	// 	void Use();
 		Cube();
-		GLfloat getVertices();
-		GLuint getIndices();
-		GLuint getSizeofIndices();
+		std::vector<GLfloat> getVertices();
+		//std::vector<GLuint> getIndices();
+		GLuint* getIndices();
+		GLuint getSizeofIndices();*/
+	private:
+		GLuint VAO;
+		//Gluint VBO;
+		GLuint EBO;
+	public:
+		Cube();
+		Cube(int pnt);
+		//void render(mat4* transform);
+		void deleteVertexBuffer();
 };
   
 #endif
