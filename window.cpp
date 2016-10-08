@@ -96,7 +96,7 @@ int main(){
 
 		
 
-		Shader monShader("/home/caroye/Documents/OpenGL/VertexShader.vs","/home/caroye/Documents/OpenGL/FragmentShader.frag");
+		Shader monShader("/home/caroye/Documents/OpenGL/OpenGL-E4/VertexShader.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/FragmentShader.frag");
 
 		//liaison des attributs du vertex
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
