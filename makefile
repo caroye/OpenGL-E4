@@ -1,7 +1,7 @@
-CFLAGS= -I/usr/include/GL -I/usr/include/libdrm -Wall -std=c++11
+CFLAGS= -I/usr/include/GL -I/usr/include/libdrm -Wall 
 LIBS= -lGLEW -lGLU -lGL -lglfw 
 
-
+#-std=c++11
 all: window 
 
 window: shader.o window.o cube.o
