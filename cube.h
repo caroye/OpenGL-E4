@@ -20,7 +20,7 @@ class Cube
 		GLuint EBO;
 	public:
 		Cube();
-		//Cube(int pnt);
+		Cube(float pt);
 		GLuint render() const;
 		void deleteVertexBuffer();
 };
