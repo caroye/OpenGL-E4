@@ -70,6 +70,12 @@ int main(){
 	}
 	glfwMakeContextCurrent(window);
 
+	// Set the required callback functions
+	glfwSetKeyCallback(window, key_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+
 	//initialisation glew
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
