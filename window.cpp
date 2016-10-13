@@ -184,9 +184,12 @@ int main(){
 		-0.5f,  0.5f, -0.5f, 
 	}; 
 	//create vertex
-
-	Shader cubeShader("U:/PR-4104/Projet_Github/PR-4104/PR-4104/VertexShader.vs","U:/PR-4104/Projet_Github/PR-4104/PR-4104/FragmentShader.frag");
-	Shader lampShader("U:/PR-4104/Projet_Github/PR-4104/PR-4104/lamp.vs", "U:/PR-4104/Projet_Github/PR-4104/PR-4104/lamp.frag");
+	//elo : /home/caroye/Documents/OpenGL/OpenGL-E4/
+	//lorkan : U:/PR-4104/Projet_Github/PR-4104/PR-4104/
+	//kevin : U:/PR-IT-4104/Lumiere/Lumiere/
+	//nico : 
+	Shader cubeShader("/home/caroye/Documents/OpenGL/OpenGL-E4/VertexShader.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/FragmentShader.frag");
+	Shader lampShader("/home/caroye/Documents/OpenGL/OpenGL-E4/lamp.vs", "/home/caroye/Documents/OpenGL/OpenGL-E4/lamp.frag");
 
 	GLuint VBO, containerVAO;
 	glGenVertexArrays(1, &containerVAO);
@@ -309,7 +312,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void do_movement()
 {
 	// Camera controls
-	GLfloat cameraSpeed = 5.0f*deltaTime;
+	//GLfloat cameraSpeed = 5.0f*deltaTime;
 	if(keys[GLFW_KEY_Z])
 		camera.ProcessKeyboard(FORWARD, deltaTime);
 	if(keys[GLFW_KEY_S])
