@@ -75,6 +75,7 @@ int main(){
 		cubeShader.Use();
 		//Creation matrice MVP
 		glm::mat4 model;
+		glm::mat4 modelLight;
 		glm::mat4 view;
 		glm::mat4 projection;
 		model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -110,15 +111,15 @@ int main(){
 
 		//draw light
 		lampShader.Use();
-		modelLoc=glGetUniformLocation(lampShader.Program, "model");
+		modelLoc=glGetUniformLocation(lampShader.Program, "modelLight");
 		viewLoc=glGetUniformLocation(lampShader.Program, "view");
 		projLoc=glGetUniformLocation(lampShader.Program, "projection");
 		glUniformMatrix4fv(viewLoc,1,GL_FALSE,glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc,1,GL_FALSE,glm::value_ptr(projection));
-		model=glm::mat4();
-		model=glm::translate(model,lightPos);
-		model=glm::scale(model,glm::vec3(0.2f));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		modelLight=glm::mat4();
+		modelLight=glm::translate(modelLight,lightPos);
+		modelLight=glm::scale(modelLight,glm::vec3(0.2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelLight));
 		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
