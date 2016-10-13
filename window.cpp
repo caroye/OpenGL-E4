@@ -47,6 +47,9 @@ bool firstMouse=true;
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
 GLfloat lastFrame = 0.0f;  	// Time of last frame
 
+//Origine de la source de lumière :
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 int main(){
 	glfwInit(); //initialise GLFW
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -88,22 +91,55 @@ int main(){
 	// Setup OpenGL options
 	glEnable(GL_DEPTH_TEST);
 
+	//Cube 3d avec vecteur normal (utiliser un autre cube pour la lampe, sinon bug)
+	GLfloat vertices[] = {
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+};
+
 	//create forme 
 	//rendu =========================================================================
-	GLfloat vertices[] = {
-		//triangle 
-		/*
-		-pnt, -pnt, 0.0f,
-		pnt, -pnt, 0.0f,
-		0.0f,  pnt, 0.0f
-		//
-		//carré
-		pnt, pnt, 0.0f,
-		pnt, -pnt, 0.0f,
-		-pnt, -pnt, 0.0f,
-		-pnt, pnt, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		*/
+	GLfloat lamp_vertices[] = {
+
 		//Cube 3D
 		-0.5f, -0.5f, -0.5f,
 		0.5f, -0.5f, -0.5f,
@@ -147,48 +183,37 @@ int main(){
 		-0.5f,  0.5f,  0.5f,
 		-0.5f,  0.5f, -0.5f, 
 	}; 
-
-	/*//pour le carré
-	GLuint indices[] = {  // Note that we start from 0!
-	0, 1, 3,   // First Triangle
-	1, 2, 3,    // Second Triangle
-	3, 0, 4
-	};
-	GLuint EBO;
-	glGenBuffers(1, &EBO);		
-	*/
 	//create vertex
-	GLuint VBO;
+
+	Shader cubeShader("U:/PR-4104/Projet_Github/PR-4104/PR-4104/VertexShader.vs","U:/PR-4104/Projet_Github/PR-4104/PR-4104/FragmentShader.frag");
+	Shader lampShader("U:/PR-4104/Projet_Github/PR-4104/PR-4104/lamp.vs", "U:/PR-4104/Projet_Github/PR-4104/PR-4104/lamp.frag");
+
+	GLuint VBO, containerVAO;
+	glGenVertexArrays(1, &containerVAO);
 	glGenBuffers(1, &VBO);
 	////copie vertices array in buffere
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-
-
-	Shader monShader("/home/caroye/Documents/OpenGL/OpenGL-E4/VertexShader.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/FragmentShader.frag");
-
 	//liaison des attributs du vertex
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glBindVertexArray(containerVAO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0); 
-
-	//create vertex array object
-	GLuint VAO;
-	glGenVertexArrays(1, &VAO); 
-
-	// ..:: Initialization code (done once (unless your object frequently changes)) :: ..
-	// 1. Bind Vertex Array Object
-	glBindVertexArray(VAO);
-	/*    // 2. Copy our vertices array in a buffer for OpenGL to use
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);//ELEMENT , VBO->EBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); //ELEMENT, vertices_triangle ->indices*/
-	// 3. Then set our vertex attributes pointers
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);  
-	//4. Unbind the VAO
+	glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,6*sizeof(GLfloat),(GLvoid*)(3*sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
 	glBindVertexArray(0);
-	// ..:: Drawing code (in Game loop) :: ..
 
+	//Initialisation de la lampe
+	GLuint lightVAO, lightVBO;
+	glGenVertexArrays(1, &lightVAO);
+	glGenBuffers(1, &lightVBO);
+	////copie vertices array in buffere
+	glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lamp_vertices), lamp_vertices, GL_STATIC_DRAW);
+	glBindVertexArray(lightVAO);
+	glBindBuffer(GL_ARRAY_BUFFER,lightVBO);
+	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),(GLvoid*)0);
+	glEnableVertexAttribArray(0);
+	glBindVertexArray(0);
 
 	//reste ouverte tant que pas choisi de cloturer
 	while(!glfwWindowShouldClose(window)){
@@ -203,7 +228,7 @@ int main(){
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// 5. Draw the object
-		monShader.Use();
+		cubeShader.Use();
 
 		//Creation matrice MVP
 		glm::mat4 model;
@@ -214,9 +239,19 @@ int main(){
 		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 
 		//Get the uniforms locations
-		GLint modelLoc = glGetUniformLocation(monShader.Program, "model");
-		GLint viewLoc = glGetUniformLocation(monShader.Program, "view");
-		GLint projLoc = glGetUniformLocation(monShader.Program, "projection");
+		GLint modelLoc = glGetUniformLocation(cubeShader.Program, "model");
+		GLint viewLoc = glGetUniformLocation(cubeShader.Program, "view");
+		GLint projLoc = glGetUniformLocation(cubeShader.Program, "projection");
+		GLint objectColorLoc = glGetUniformLocation(cubeShader.Program, "objectColor");
+		GLint lightColorLoc = glGetUniformLocation(cubeShader.Program, "lightColor");
+		GLint lightPosLoc = glGetUniformLocation(cubeShader.Program, "lightPos");
+		GLint viwPosLoc = glGetUniformLocation(cubeShader.Program, "viewPos");
+
+		//Initialisation des attributs de couleur (pour le cube)
+		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
+		glUniform3f(lightColorLoc, 1.0f, 0.5f, 1.0f);
+		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+		glUniform3f(viwPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 
 		//Pass the matrices to the shader
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -224,10 +259,27 @@ int main(){
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		//glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
+		glBindVertexArray(containerVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		//glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
+
+		//Dessin de la lampe
+		
+		lampShader.Use();
+		modelLoc=glGetUniformLocation(lampShader.Program, "model");
+		viewLoc=glGetUniformLocation(lampShader.Program, "view");
+		projLoc=glGetUniformLocation(lampShader.Program, "projection");
+		glUniformMatrix4fv(viewLoc,1,GL_FALSE,glm::value_ptr(view));
+		glUniformMatrix4fv(projLoc,1,GL_FALSE,glm::value_ptr(projection));
+		model=glm::mat4();
+		model=glm::translate(model,lightPos);
+		model=glm::scale(model,glm::vec3(0.2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glBindVertexArray(lightVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		
 
 		//======================================================================================
 		//échange les buffers
@@ -235,7 +287,7 @@ int main(){
 	}
 
 	// Properly de-allocate all resources once they've outlived their purpose
-	glDeleteVertexArrays(1, &VAO);
+	glDeleteVertexArrays(1, &containerVAO);
 	glDeleteBuffers(1, &VBO);
 	// glDeleteBuffers(1, &EBO);
 
