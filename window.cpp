@@ -1,57 +1,4 @@
-/* For Linux users compiling with GCC the following command line options might
- help you compile the project -lGLEW -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi. 
- Not correctly linking the corresponding libraries will generate many undefined 
- reference errors. */
-
- /*gcc window.cpp -o window -lGLEW -lGLU -lGL -I/usr/include/GL 
- -I/usr/include/libdrm -lglfw -lstdc++
-*/
-
-
-
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
-
-#define GLEW_STATIC
-#include <GL/glew.h>
-
-#include <GLFW/glfw3.h>
-
-//GLM
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include "shader.h"
-#include "cube.h"
-#include "camera.h"
-//#include "clavier.h"
-
-#define WIDTH 800
-#define HEIGHT 600
-#define nullptr NULL
-#define pnt 0.5f
-
-//Function prototypes
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void do_movement();
-
-//Position initiale camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-GLfloat lastX =  WIDTH  / 2.0;
-GLfloat lastY =  HEIGHT / 2.0;
-bool keys[1024];	//Les touches du clavier/souris : pour le déplacement de la caméra
-bool firstMouse=true;
-
-
-//Pour calculer la vitesse de la caméra
-GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
-GLfloat lastFrame = 0.0f;  	// Time of last frame*/
-
+#include "window.h"
 
 int main(){
 	glfwInit(); //initialise GLFW
@@ -96,33 +43,22 @@ int main(){
 
 	//create forme 
 	//rendu =========================================================================
+		
+		//elo : /home/caroye/Documents/OpenGL/OpenGL-E4/
+		//lorkan : U:/PR-4104/Projet_Github/PR-4104/PR-4104/
+		//kevin : U:/PR-IT-4104/Lumiere/Lumiere/
+		//nico :
+		Shader cubeShader("/home/caroye/Documents/OpenGL/OpenGL-E4/VertexShader.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/FragmentShader.frag");
+		Shader lampShader("/home/caroye/Documents/OpenGL/OpenGL-E4/lamp.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/lamp.frag");
 		Cube monCube;
-		Shader monShader("/home/caroye/Documents/OpenGL/OpenGL-E4/VertexShader.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/FragmentShader.frag");
+		CubeLight myLight;
 		GLuint VAO_w = monCube.render();
+		GLuint lightVAO = myLight.render();
+
 
 
 	//reste ouverte tant que pas choisi de cloturer
 	while(!glfwWindowShouldClose(window)){
-	//while(key != 'q'){
-
-		//Creation matrice MVP
-		glm::mat4 model;
-		glm::mat4 view;
-		glm::mat4 projection;
-		model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-		view = camera.GetViewMatrix();
-		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
-
-		//Get the uniforms locations
-		GLint modelLoc = glGetUniformLocation(monShader.Program, "model");
-		GLint viewLoc = glGetUniformLocation(monShader.Program, "view");
-		GLint projLoc = glGetUniformLocation(monShader.Program, "projection");
-
-		//Pass the matrices to the shader
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
 		//Calcul de la vitesse de déplacement de la caméra
 		GLfloat currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
@@ -136,14 +72,55 @@ int main(){
 
 
 
-		// 5. Draw the object
-		monShader.Use();
+		cubeShader.Use();
+		//Creation matrice MVP
+		glm::mat4 model;
+		glm::mat4 view;
+		glm::mat4 projection;
+		model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		view = camera.GetViewMatrix();
+		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+
+		//Get the uniforms locations
+		GLint modelLoc = glGetUniformLocation(cubeShader.Program, "model");
+		GLint viewLoc = glGetUniformLocation(cubeShader.Program, "view");
+		GLint projLoc = glGetUniformLocation(cubeShader.Program, "projection");
+		GLint objectColorLoc = glGetUniformLocation(cubeShader.Program, "objectColor");
+		GLint lightColorLoc = glGetUniformLocation(cubeShader.Program, "lightColor");
+		GLint lightPosLoc = glGetUniformLocation(cubeShader.Program, "lightPos");
+		GLint viwPosLoc = glGetUniformLocation(cubeShader.Program, "viewPos");
+
+		//Initialisation des attributs de couleur (pour le cube)
+		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
+		glUniform3f(lightColorLoc, 1.0f, 0.5f, 1.0f);
+		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+		glUniform3f(viwPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 		
+		//Pass the matrices to the shader
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		// 5. Draw the object		
 		glBindVertexArray(VAO_w);
 		glDrawArrays(GL_TRIANGLES, 0, 36); //pour un seul triangle
-		//glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0); //pour plusieurs triangles
 		
-		//delie le VAO
+
+
+
+		//draw light
+		lampShader.Use();
+		modelLoc=glGetUniformLocation(lampShader.Program, "model");
+		viewLoc=glGetUniformLocation(lampShader.Program, "view");
+		projLoc=glGetUniformLocation(lampShader.Program, "projection");
+		glUniformMatrix4fv(viewLoc,1,GL_FALSE,glm::value_ptr(view));
+		glUniformMatrix4fv(projLoc,1,GL_FALSE,glm::value_ptr(projection));
+		model=glm::mat4();
+		model=glm::translate(model,lightPos);
+		model=glm::scale(model,glm::vec3(0.2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glBindVertexArray(lightVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 
 		//======================================================================================
@@ -153,6 +130,7 @@ int main(){
 
 	//libere la memoire allouee aux buffers et vertex array
     monCube.deleteVertexBuffer();
+    myLight.deleteVertexBuffer();
 
 	glfwTerminate();
 	return 0;
@@ -174,7 +152,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void do_movement()
 {
 	// Camera controls
-	GLfloat cameraSpeed = 5.0f*deltaTime;
 	if(keys[GLFW_KEY_Z])
 		camera.ProcessKeyboard(FORWARD, deltaTime);
 	if(keys[GLFW_KEY_S])

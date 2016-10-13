@@ -1,3 +1,5 @@
+#ifndef CAMERA_H
+#define CAMERA_H
 #pragma once
 
 // Std. Includes
@@ -67,3 +69,5 @@ private:
     // Calculates the front vector from the Camera's (updated) Eular Angles
     void updateCameraVectors();
 };
+
+#endif
