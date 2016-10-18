@@ -29,8 +29,8 @@
 #include "camera.h"
 #include "cubeLight.h"
 
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 1280
+#define HEIGHT 720
 #define nullptr NULL
 #define pnt 0.5f
 

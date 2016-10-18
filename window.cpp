@@ -55,7 +55,12 @@ int main(){
 		GLuint VAO_w = monCube.render();
 		GLuint lightVAO = myLight.render();
 
-
+		//Plusieurs cubes
+		glm::vec3 cubePositions[] = {					//Positions des cubes modifiées, pour des résultats plus probants
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			glm::vec3(0.5f, -1.0f, -2.0f)
+		};
 
 	//reste ouverte tant que pas choisi de cloturer
 	while(!glfwWindowShouldClose(window)){
@@ -89,14 +94,25 @@ int main(){
 		GLint objectColorLoc = glGetUniformLocation(cubeShader.Program, "objectColor");
 		GLint lightColorLoc = glGetUniformLocation(cubeShader.Program, "lightColor");
 		GLint lightPosLoc = glGetUniformLocation(cubeShader.Program, "lightPos");
+		
+		GLint indirectLightPos1 = glGetUniformLocation(cubeShader.Program, "indirectLightPos1");				//Une lumière indirecte par cube
+		GLint indirectLightPos2 = glGetUniformLocation(cubeShader.Program, "indirectLightPos2");
+		GLint indirectLightPos3 = glGetUniformLocation(cubeShader.Program, "indirectLightPos3");
+
 		GLint viwPosLoc = glGetUniformLocation(cubeShader.Program, "viewPos");
 
+
+		
 		//Initialisation des attributs de couleur (pour le cube)
 		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
 		glUniform3f(lightColorLoc, 1.0f, 0.5f, 1.0f);
 		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 		glUniform3f(viwPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 		
+		glUniform3f(indirectLightPos1, cubePositions[0].x, cubePositions[0].y, cubePositions[0].z);
+		glUniform3f(indirectLightPos2, cubePositions[1].x, cubePositions[1].y, cubePositions[1].z);
+		glUniform3f(indirectLightPos3, cubePositions[2].x, cubePositions[2].y, cubePositions[2].z);
+
 		//Pass the matrices to the shader
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -104,9 +120,33 @@ int main(){
 
 		// 5. Draw the object		
 		glBindVertexArray(VAO_w);
-		glDrawArrays(GL_TRIANGLES, 0, 36); //pour un seul triangle
+		//glDrawArrays(GL_TRIANGLES, 0, 36); //pour un seul triangle
 		
-
+		for(GLint i=0; i<3;i++){
+			model = glm::translate(model, cubePositions[i]);
+			if(keys[GLFW_KEY_H]){
+				cubePositions[0].x=cubePositions[0].x+0.01f;
+			}
+			if(keys[GLFW_KEY_F]){
+				cubePositions[0].x=cubePositions[0].x-0.01f;
+			}
+			if(keys[GLFW_KEY_T]){
+				cubePositions[0].y=cubePositions[0].y+0.01f;
+			}
+			if(keys[GLFW_KEY_G]){
+				cubePositions[0].y=cubePositions[0].y-0.01f;
+			}
+			if(keys[GLFW_KEY_R]){
+				cubePositions[0].z=cubePositions[0].z-0.01f;
+			}
+			if(keys[GLFW_KEY_Y]){
+				cubePositions[0].z=cubePositions[0].z+0.01f;
+			}
+			GLfloat angle = 20.0f*i;
+			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 
 		//draw light
@@ -161,6 +201,10 @@ void do_movement()
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if(keys[GLFW_KEY_D])
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+	if(keys[GLFW_KEY_LEFT_CONTROL])
+		camera.ProcessKeyboard(DOWN, deltaTime);
+	if(keys[GLFW_KEY_SPACE])
+		camera.ProcessKeyboard(UP,deltaTime);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
