@@ -8,6 +8,14 @@ reference errors. */
 */
 
 
+/*Les lignes suivantes ont étés ajoutées par rapport à la version GitHub :
+	30-31
+	194-198
+	259-262
+	271-273
+	282-306
+Suppression de la ligne 240, 260
+*/
 
 #include <iostream>
 #include <stdio.h>
@@ -24,8 +32,8 @@ reference errors. */
 #include "shader.h"
 #include "Camera.h"
 
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 1280					//Dimensions de la fenêtre changées, pour plus de lisibilité
+#define HEIGHT 720
 #define nullptr NULL
 #define pnt 0.5f
 
@@ -49,6 +57,7 @@ GLfloat lastFrame = 0.0f;  	// Time of last frame
 
 //Origine de la source de lumière :
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 
 int main(){
 	glfwInit(); //initialise GLFW
@@ -184,10 +193,18 @@ int main(){
 		-0.5f,  0.5f, -0.5f, 
 	}; 
 	//create vertex
+
+	//Plusieurs cubes
+	glm::vec3 cubePositions[] = {					//Positions des cubes modifiées, pour des résultats plus probants
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(0.5f, -1.0f, -2.0f)
+	};
+
 	//elo : /home/caroye/Documents/OpenGL/OpenGL-E4/
 	//lorkan : U:/PR-4104/Projet_Github/PR-4104/PR-4104/
 	//kevin : U:/PR-IT-4104/Lumiere/Lumiere/
-	//nico : 
+	//nico 
 	Shader cubeShader("/home/caroye/Documents/OpenGL/OpenGL-E4/VertexShader.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/FragmentShader.frag");
 	Shader lampShader("/home/caroye/Documents/OpenGL/OpenGL-E4/lamp.vs", "/home/caroye/Documents/OpenGL/OpenGL-E4/lamp.frag");
 
@@ -237,7 +254,6 @@ int main(){
 		glm::mat4 model;
 		glm::mat4 view;
 		glm::mat4 projection;
-		model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 		view = camera.GetViewMatrix(); 
 		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 
@@ -248,6 +264,9 @@ int main(){
 		GLint objectColorLoc = glGetUniformLocation(cubeShader.Program, "objectColor");
 		GLint lightColorLoc = glGetUniformLocation(cubeShader.Program, "lightColor");
 		GLint lightPosLoc = glGetUniformLocation(cubeShader.Program, "lightPos");
+		GLint indirectLightPos1 = glGetUniformLocation(cubeShader.Program, "indirectLightPos1");				//Une lumière indirecte par cube
+		GLint indirectLightPos2 = glGetUniformLocation(cubeShader.Program, "indirectLightPos2");
+		GLint indirectLightPos3 = glGetUniformLocation(cubeShader.Program, "indirectLightPos3");
 		GLint viwPosLoc = glGetUniformLocation(cubeShader.Program, "viewPos");
 
 		//Initialisation des attributs de couleur (pour le cube)
@@ -256,15 +275,42 @@ int main(){
 		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 		glUniform3f(viwPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 
+		glUniform3f(indirectLightPos1, cubePositions[0].x, cubePositions[0].y, cubePositions[0].z);
+		glUniform3f(indirectLightPos2, cubePositions[1].x, cubePositions[1].y, cubePositions[1].z);
+		glUniform3f(indirectLightPos3, cubePositions[2].x, cubePositions[2].y, cubePositions[2].z);
+
 		//Pass the matrices to the shader
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		//glUseProgram(shaderProgram);
 		glBindVertexArray(containerVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		//glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+		for(GLint i=0; i<3;i++){
+			model = glm::translate(model, cubePositions[i]);
+			if(keys[GLFW_KEY_H]){
+				cubePositions[0].x=cubePositions[0].x+0.01f;
+			}
+			if(keys[GLFW_KEY_F]){
+				cubePositions[0].x=cubePositions[0].x-0.01f;
+			}
+			if(keys[GLFW_KEY_T]){
+				cubePositions[0].y=cubePositions[0].y+0.01f;
+			}
+			if(keys[GLFW_KEY_G]){
+				cubePositions[0].y=cubePositions[0].y-0.01f;
+			}
+			if(keys[GLFW_KEY_R]){
+				cubePositions[0].z=cubePositions[0].z-0.01f;
+			}
+			if(keys[GLFW_KEY_Y]){
+				cubePositions[0].z=cubePositions[0].z+0.01f;
+			}
+			GLfloat angle = 20.0f*i;
+			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+		
 		glBindVertexArray(0);
 
 		//Dessin de la lampe
@@ -276,10 +322,10 @@ int main(){
 		glUniformMatrix4fv(viewLoc,1,GL_FALSE,glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc,1,GL_FALSE,glm::value_ptr(projection));
 		model=glm::mat4();
+		glBindVertexArray(lightVAO);
 		model=glm::translate(model,lightPos);
 		model=glm::scale(model,glm::vec3(0.2f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 		
@@ -292,7 +338,6 @@ int main(){
 	// Properly de-allocate all resources once they've outlived their purpose
 	glDeleteVertexArrays(1, &containerVAO);
 	glDeleteBuffers(1, &VBO);
-	// glDeleteBuffers(1, &EBO);
 
 	glfwTerminate();
 	return 0;
@@ -312,7 +357,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void do_movement()
 {
 	// Camera controls
-	//GLfloat cameraSpeed = 5.0f*deltaTime;
 	if(keys[GLFW_KEY_Z])
 		camera.ProcessKeyboard(FORWARD, deltaTime);
 	if(keys[GLFW_KEY_S])
@@ -321,6 +365,10 @@ void do_movement()
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if(keys[GLFW_KEY_D])
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+	if(keys[GLFW_KEY_LEFT_CONTROL])
+		camera.ProcessKeyboard(DOWN, deltaTime);
+	if(keys[GLFW_KEY_SPACE])
+		camera.ProcessKeyboard(UP,deltaTime);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -343,3 +391,4 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
 }
+//Bref, ça marche à peu près.
