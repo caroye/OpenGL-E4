@@ -8,7 +8,7 @@
   
 #include <GL/glew.h> // Include glew to get all the required OpenGL headers
 
-#include <GlFW/glfw3.h>
+#include <GLFW/glfw3.h>
 
 class Shader
 {
