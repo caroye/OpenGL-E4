@@ -70,7 +70,9 @@ int main(){
 		lastFrame = currentFrame; 
 		//vérifie et appelle les évènements
 		glfwPollEvents();
-		do_movement();
+		do_movement();		
+		setPos();
+		setRot();
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -83,7 +85,11 @@ int main(){
 		glm::mat4 modelLight;
 		glm::mat4 view;
 		glm::mat4 projection;
-		model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+		//model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, angle, glm::vec3(rxCube, ryCube, rzCube));
+		model = glm::translate(model, glm::vec3(xCube, yCube, zCube));
+
 		view = camera.GetViewMatrix();
 		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 
@@ -226,4 +232,47 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
+}
+
+//Change la position du cube
+void setPos()
+{
+	if (keys[GLFW_KEY_U])
+		xCube += 0.1f;
+	if (keys[GLFW_KEY_I])
+		yCube += 0.1f;
+	if (keys[GLFW_KEY_O])
+		zCube += 0.1f;
+	if (keys[GLFW_KEY_J])
+		xCube -= 0.1f;
+	if (keys[GLFW_KEY_K])
+		yCube -= 0.1f;
+	if (keys[GLFW_KEY_L])
+		zCube -= 0.1f;
+}
+
+//Change la rotation du cube
+void setRot()
+{
+	if (keys[GLFW_KEY_V])//rotation sur X
+	{
+		angle += 0.01f;
+		rxCube = cos(angle) + (RxCube^2)*(1 - cos(angle));
+		ryCube = ryCube*rxCube*(1 - cos(angle)) + rzCube*sin(angle);
+		rzCube = rxCube*rzCube*(1 - cos(angle)) - ryCube*sin(angle);
+	}
+	if (keys[GLFW_KEY_B])//rotation sur Y
+	{
+		angle += 0.01f;
+		rxCube = ryCube*rxCube*(1 - cos(angle)) - rzCube*sin(angle);
+		ryCube = cos(angle) + (RyCube ^ 2)*(1 - cos(angle));
+		rzCube = ryCube*rzCube*(1 - cos(angle)) - rxCube*sin(angle);
+	}
+	if (keys[GLFW_KEY_N])//rotation sur Z
+	{
+		angle += 0.01f;
+		rxCube = rxCube*rzCube*(1 - cos(angle)) + ryCube*sin(angle);
+		ryCube = ryCube*rzCube*(1 - cos(angle)) - rxCube*sin(angle);
+		rzCube = cos(angle) + (RzCube ^ 2)*(1 - cos(angle));
+	}
 }

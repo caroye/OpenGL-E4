@@ -40,12 +40,31 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void do_movement();
 
+	//mvmt cube
+//glm::vec3 vecPos(float x, float y, float z);
+void setPos();
+void setRot();
+
 //Position initiale camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 GLfloat lastX =  WIDTH  / 2.0;
 GLfloat lastY =  HEIGHT / 2.0;
 bool keys[1024];	//Les touches du clavier/souris : pour le déplacement de la caméra
 bool firstMouse=true;
+
+//Position du cube
+float xCube = 1.0f;
+float yCube = 1.0f;
+float zCube = 1.0f;
+
+float rxCube = 1.0f;
+float ryCube = 1.0f;
+float rzCube = 1.0f;
+float angle = 0.1f;
+
+int RxCube = 1.0f;
+int RyCube = 1.0f;
+int RzCube = 1.0f;
 
 
 //Pour calculer la vitesse de la caméra
