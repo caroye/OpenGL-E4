@@ -1,3 +1,5 @@
+#ifndef CAMERA_H
+#define CAMERA_H
 #pragma once
 
 // Std. Includes
@@ -15,7 +17,9 @@ enum Camera_Movement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT,
+    UP,
+    DOWN
 };
 
 // Default camera values
@@ -67,3 +71,5 @@ private:
     // Calculates the front vector from the Camera's (updated) Eular Angles
     void updateCameraVectors();
 };
+
+#endif

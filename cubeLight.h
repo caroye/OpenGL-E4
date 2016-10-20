@@ -1,5 +1,5 @@
-#ifndef CUBE_H
-#define CUBE_H
+#ifndef CUBELIGHT_H
+#define CUBELIGHT_H
 
 #include <string>
 #include <fstream>
@@ -10,7 +10,7 @@
 
 #include <GLFW/glfw3.h>
 
-class Cube
+class CubeLight
 {
 	
 	private:
@@ -18,8 +18,8 @@ class Cube
 		GLuint VBO;
 		GLuint EBO;
 	public:
-		Cube();
-		Cube(float pt);
+		CubeLight();
+		CubeLight(float pt);
 		GLuint render() const;
 		void deleteVertexBuffer();
 };
