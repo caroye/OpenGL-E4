@@ -11,6 +11,7 @@ uniform vec3 viewPos;
 uniform vec3 indirectLightPos1;
 uniform vec3 indirectLightPos2;
 uniform vec3 indirectLightPos3;
+uniform float accentuation;
 
 void main()
 {
@@ -23,7 +24,7 @@ void main()
 	vec3 lightDir = normalize(lightPos - FragPos);
 	float diff = max(dot(norm, lightDir), 0.0);
 
-	float accentuation = 0.5f;									//A modifier pour observer sur la reflexion de lumière
+	//float accentuation = 0.7f;		//A modifier pour observer sur la reflexion de lumière
 	vec3 iLightDir1 = normalize(indirectLightPos1 - FragPos);	
 	float diff1 = max(dot(norm,iLightDir1),0.0)*accentuation;
 	vec3 iLightDir2 = normalize(indirectLightPos2 - FragPos);

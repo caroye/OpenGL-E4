@@ -44,6 +44,7 @@ void do_movement();
 //glm::vec3 vecPos(float x, float y, float z);
 void setPos();
 void setRot();
+void setLum(GLint accentuationLoc);
 
 //Position initiale camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -52,15 +53,27 @@ GLfloat lastY =  HEIGHT / 2.0;
 bool keys[1024];	//Les touches du clavier/souris : pour le déplacement de la caméra
 bool firstMouse=true;
 
+//Accentuation de la reflexion de lumière
+float accentuation = 0.5f;
+
 //Position du cube
-float xCube = 1.0f;
-float yCube = 1.0f;
-float zCube = 1.0f;
+float xCube = 0.0f;
+float yCube = 0.0f;
+float zCube = 0.0f;
+float xCube2 = 1.0f;
+float yCube2 = 1.0f;
+float zCube2 = 1.0f;
+float xCube3 = 0.5f;
+float yCube3 = -1.0f;
+float zCube3 = -2.0f;
 
 float rxCube = 1.0f;
 float ryCube = 1.0f;
 float rzCube = 1.0f;
-float angle = 0.1f;
+float angle = 20.0f;
+float angleX= 0.0f;
+float angleY= 0.0f;
+float angleZ= 0.0f;
 
 int RxCube = 1.0f;
 int RyCube = 1.0f;
@@ -69,7 +82,7 @@ int RzCube = 1.0f;
 
 //Pour calculer la vitesse de la caméra
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
-GLfloat lastFrame = 0.0f;  	// Time of last frame*/
+GLfloat lastFrame = 0.0f;  	// Time of last frame
 
 //Origine de la source de lumière :
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
