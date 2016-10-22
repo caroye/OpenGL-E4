@@ -39,15 +39,14 @@ int main(){
 
 	//setup OpenGL option
 	glEnable(GL_DEPTH_TEST);
-	//glClear(GL_DEPTH_BUFFER_BIT);
 
-	//create forme 
+	
 	//rendu =========================================================================
-		
-		//elo : /home/caroye/Documents/OpenGL/OpenGL-E4/
-		//lorkan : U:/PR-4104/Projet_Github/PR-4104/PR-4104/
-		//kevin : U:/PR-IT-4104/Lumiere/Lumiere/
-		//nico :
+		//creation des shaders et des cubes
+				//elo : /home/caroye/Documents/OpenGL/OpenGL-E4/
+				//lorkan : U:/PR-4104/Projet_Github/PR-4104/PR-4104/
+				//kevin : U:/PR-IT-4104/Lumiere/Lumiere/
+				//nico :
 		Shader cubeShader("/home/caroye/Documents/OpenGL/OpenGL-E4/VertexShader.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/FragmentShader.frag");
 		Shader lampShader("/home/caroye/Documents/OpenGL/OpenGL-E4/lamp.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/lamp.frag");
 		Cube monCube;
@@ -81,17 +80,14 @@ int main(){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-
+		//utilisation du programme du shader
 		cubeShader.Use();
+
 		//Creation matrice MVP
 		glm::mat4 model;
 		glm::mat4 modelLight;
 		glm::mat4 view;
 		glm::mat4 projection;
-
-		/*/model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, angle, glm::vec3(rxCube, ryCube, rzCube));
-		model = glm::translate(model, glm::vec3(xCube, yCube, zCube));//*/
 
 		view = camera.GetViewMatrix();
 		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
@@ -130,7 +126,6 @@ int main(){
 
 		// 5. Draw the object		
 		glBindVertexArray(VAO_w);
-		//glDrawArrays(GL_TRIANGLES, 0, 36); //pour un seul triangle
 		
 		for(GLint i=0; i<3;i++){
 			model = glm::rotate(model, angle*i, glm::vec3(rxCube, ryCube, rzCube));
@@ -141,11 +136,11 @@ int main(){
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
-		
+
 		setLum(accentuationLoc);
 
 
-		//draw light
+		//rendu du cube lumiere
 		lampShader.Use();
 		modelLoc=glGetUniformLocation(lampShader.Program, "modelLight");
 		viewLoc=glGetUniformLocation(lampShader.Program, "view");
@@ -164,7 +159,6 @@ int main(){
 		//échange les buffers
 		glfwSwapBuffers(window);
 
-		//std::cout << "cube 1 x:" << cubePositions[0].x << std::endl;
 	}
 
 	//libere la memoire allouee aux buffers et vertex array

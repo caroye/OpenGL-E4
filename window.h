@@ -40,10 +40,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void do_movement();
 
-	//mvmt cube
-//glm::vec3 vecPos(float x, float y, float z);
+//mouvement cube 
 void setPos();
 void setRot();
+
+//changement intensite de la reflection
 void setLum(GLint accentuationLoc);
 
 //Position initiale camera
@@ -74,11 +75,6 @@ float angle = 20.0f;
 float angleX= 0.0f;
 float angleY= 0.0f;
 float angleZ= 0.0f;
-
-int RxCube = 1.0f;
-int RyCube = 1.0f;
-int RzCube = 1.0f;
-
 
 //Pour calculer la vitesse de la caméra
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
