@@ -34,17 +34,26 @@
 #define nullptr NULL
 #define pnt 0.5f
 
-//Function prototypes
+//Prootype des fonctions
+//Fonction permettant de fermer la fenêtre si on appuie sur 'Echap'
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+
+//Fonction permettant d'orienter la caméra dans une direction
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+
+//Fonction permettant de  zoomer à l'aide du scroll
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
+//Fonction permettant de déplacer la caméra
 void do_movement();
 
-//mouvement cube 
+//Change la position du cube
 void setPos();
+
+//Change la rotation du cube
 void setRot();
 
-//changement intensite de la reflection
+//Fonction permettant d'accentuer ou non la réfléxion de la lumière
 void setLum(GLint accentuationLoc);
 
 //Position initiale camera
@@ -57,7 +66,7 @@ bool firstMouse=true;
 //Accentuation de la reflexion de lumière
 float accentuation = 0.5f;
 
-//Position du cube
+//Positions par défaut des cubes
 float xCube = 0.0f;
 float yCube = 0.0f;
 float zCube = 0.0f;
@@ -77,8 +86,8 @@ float angleY= 0.0f;
 float angleZ= 0.0f;
 
 //Pour calculer la vitesse de la caméra
-GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
-GLfloat lastFrame = 0.0f;  	// Time of last frame
+GLfloat deltaTime = 0.0f;	//Temps entre l'image courrante et l'image précédente
+GLfloat lastFrame = 0.0f;  	//Temps de l'image précédente
 
-//Origine de la source de lumière :
+//Origine de la source de lumière 
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);

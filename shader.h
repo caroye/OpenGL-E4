@@ -5,20 +5,22 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-  
-#include <GL/glew.h> // Include glew to get all the required OpenGL headers
+
+#include <GL/glew.h> 
 
 #include <GLFW/glfw3.h>
 
 class Shader
 {
 public:
-  	// The program ID
+	// L'identifieur du programme, pour récupérer le programme dans le main
 	GLuint Program;
-	// Constructor reads and builds the shader
+
+	// Constructeur du shader, composé d'un vertex shader et d'un fragment shader
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
-  	// Use the program
-  	void Use();
+
+	// Lancement du programme
+	void Use();
 };
-  
+
 #endif
