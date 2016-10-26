@@ -18,10 +18,10 @@ class Cube
 		GLuint VBO;
 		GLuint EBO;
 	public:
-		Cube(); //Constructeur par défaut
-		Cube(float pt);//Constructeur pour un cube de taille spécifique 
-		GLuint render() const;//Retourne le VAO
-		void deleteVertexBuffer();//Suppression des Vertex Buffer
+		Cube();
+		Cube(float pt);
+		GLuint render() const;
+		void deleteVertexBuffer();
 };
   
 #endif

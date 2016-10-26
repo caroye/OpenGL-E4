@@ -1,6 +1,6 @@
 #include "camera.h"
 
-// Constructeur avec vecteurs
+// Constructor with vectors
 Camera::Camera(glm::vec3 position , glm::vec3 up , GLfloat yaw , GLfloat pitch ) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVTY), Zoom(ZOOM)
 {
     this->Position = position;
@@ -9,7 +9,7 @@ Camera::Camera(glm::vec3 position , glm::vec3 up , GLfloat yaw , GLfloat pitch )
     this->Pitch = pitch;
     this->updateCameraVectors();
 }
-// Constructeur avec des scalaires 
+// Constructor with scalar values
 Camera::Camera(GLfloat posX, GLfloat posY, GLfloat posZ, GLfloat upX, GLfloat upY, GLfloat upZ, GLfloat yaw, GLfloat pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVTY), Zoom(ZOOM)
 {
     this->Position = glm::vec3(posX, posY, posZ);
@@ -19,13 +19,13 @@ Camera::Camera(GLfloat posX, GLfloat posY, GLfloat posZ, GLfloat upX, GLfloat up
     this->updateCameraVectors();
 }
 
-//Retourne la matrice vue calculée avec les angles d'Euler et la matrice LookAt
+// Returns the view matrix calculated using Eular Angles and the LookAt Matrix
 glm::mat4 Camera::GetViewMatrix()
 {
     return glm::lookAt(this->Position, this->Position + this->Front, this->Up);
 }
 
-//Execution des entrées en provenance du clavier, permet de déplacer la caméra
+// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 void Camera::ProcessKeyboard(Camera_Movement direction, GLfloat deltaTime)
 {
     GLfloat velocity = this->MovementSpeed * deltaTime;
@@ -39,7 +39,7 @@ void Camera::ProcessKeyboard(Camera_Movement direction, GLfloat deltaTime)
         this->Position += this->Right * velocity;
 }
 
-//Exécution des entrées en provenance de la souris, permet d'orienter la caméra selon une direction
+// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
 void Camera::ProcessMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean constrainPitch)
 {
     xoffset *= this->MouseSensitivity;
@@ -48,7 +48,7 @@ void Camera::ProcessMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean co
     this->Yaw   += xoffset;
     this->Pitch += yoffset;
 
-    //Pour éviter de retourner l'écran, la valeur du pitch est fixé a 89° même si celle ci est supérieure
+    // Make sure that when pitch is out of bounds, screen doesn't get flipped
     if (constrainPitch)
     {
         if (this->Pitch > 89.0f)
@@ -57,11 +57,11 @@ void Camera::ProcessMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean co
             this->Pitch = -89.0f;
     }
 
-    //Mise à jour des vecteur 'Front' et 'Right' en tenant compte de la mise à jour des angles d'Euler
+    // Update Front, Right and Up Vectors using the updated Eular angles
     this->updateCameraVectors();
 }
 
-//Exécution des entrées en provenance du scroll de la souris
+// Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
 void Camera::ProcessMouseScroll(GLfloat yoffset)
 {
     if (this->Zoom >= 1.0f && this->Zoom <= 45.0f)
@@ -72,16 +72,16 @@ void Camera::ProcessMouseScroll(GLfloat yoffset)
         this->Zoom = 45.0f;
 }
 
-//Calcule l'actuel vecteur 'Front' qui résulte des angles 'Pitch' et 'Yaw'
+// Calculates the front vector from the Camera's (updated) Eular Angles
 void Camera::updateCameraVectors()
 {
-    //Calcul du vecteur
+    // Calculate the new Front vector
     glm::vec3 front;
     front.x = cos(glm::radians(this->Yaw)) * cos(glm::radians(this->Pitch));
     front.y = sin(glm::radians(this->Pitch));
     front.z = sin(glm::radians(this->Yaw)) * cos(glm::radians(this->Pitch));
     this->Front = glm::normalize(front);
-    //Calcul du vecteur 'Right' 
-    this->Right = glm::normalize(glm::cross(this->Front, this->WorldUp));  //Normalise le vecteur
+    // Also re-calculate the Right and Up vector
+    this->Right = glm::normalize(glm::cross(this->Front, this->WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
     this->Up    = glm::normalize(glm::cross(this->Right, this->Front));
 }
