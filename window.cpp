@@ -17,7 +17,7 @@ int main(){
 	}
 	glfwMakeContextCurrent(window);
 
-	//Definition des fonction callback
+	// Set the required callback functions
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
@@ -39,30 +39,31 @@ int main(){
 
 	//setup OpenGL option
 	glEnable(GL_DEPTH_TEST);
+	//glClear(GL_DEPTH_BUFFER_BIT);
 
-	
+	//create forme 
 	//rendu =========================================================================
-		//creation des shaders et des cubes
-	    // Mettre le chemin des emplacements des Shader et FragmentShader ci dessous 
-		Shader cubeShader("D:/ESIEE/E4/PR-IT-4104/OpenGL-E4-archi_camera/OpenGL-E4-archi/VertexShader.vs","D:/ESIEE/E4/PR-IT-4104/OpenGL-E4-archi_camera/OpenGL-E4-archi/FragmentShader.frag");
-		Shader lampShader("D:/ESIEE/E4/PR-IT-4104/OpenGL-E4-archi_camera/OpenGL-E4-archi/lamp.vs","D:/ESIEE/E4/PR-IT-4104/OpenGL-E4-archi_camera/OpenGL-E4-archi/lamp.frag");
+		
+		//elo : /home/caroye/Documents/OpenGL/OpenGL-E4/
+		//lorkan : U:/PR-4104/Projet_Github/PR-4104/PR-4104/
+		//kevin : U:/PR-IT-4104/Lumiere/Lumiere/
+		//nico :
+		Shader cubeShader("/home/caroye/Documents/OpenGL/OpenGL-E4/VertexShader.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/FragmentShader.frag");
+		Shader lampShader("/home/caroye/Documents/OpenGL/OpenGL-E4/lamp.vs","/home/caroye/Documents/OpenGL/OpenGL-E4/lamp.frag");
 		Cube monCube;
 		CubeLight myLight;
 		GLuint VAO_w = monCube.render();
 		GLuint lightVAO = myLight.render();
 
-
-		
-	//reste ouverte tant que pas choisi de cloturer
-	while(!glfwWindowShouldClose(window)){
 		//Plusieurs cubes
-		glm::vec3 cubePositions[] = {//Positions des cubes modifiées, pour des résultats plus probants
-			glm::vec3(xCube,yCube,zCube),
-			glm::vec3(xCube2,yCube2,zCube2),
-			glm::vec3(xCube3,yCube3,zCube3),
+		glm::vec3 cubePositions[] = {					//Positions des cubes modifiées, pour des résultats plus probants
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			glm::vec3(0.5f, -1.0f, -2.0f)
 		};
 
-
+	//reste ouverte tant que pas choisi de cloturer
+	while(!glfwWindowShouldClose(window)){
 		//Calcul de la vitesse de déplacement de la caméra
 		GLfloat currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
@@ -77,34 +78,35 @@ int main(){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		//utilisation du programme du shader
-		cubeShader.Use();
 
-		//Création de la matrice MVP
+		cubeShader.Use();
+		//Creation matrice MVP
 		glm::mat4 model;
 		glm::mat4 modelLight;
 		glm::mat4 view;
 		glm::mat4 projection;
 
+		//model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, angle, glm::vec3(rxCube, ryCube, rzCube));
+		model = glm::translate(model, glm::vec3(xCube, yCube, zCube));
+
 		view = camera.GetViewMatrix();
 		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 
-		//Accès aux locations Uniformes 
+		//Get the uniforms locations
 		GLint modelLoc = glGetUniformLocation(cubeShader.Program, "model");
 		GLint viewLoc = glGetUniformLocation(cubeShader.Program, "view");
 		GLint projLoc = glGetUniformLocation(cubeShader.Program, "projection");
 		GLint objectColorLoc = glGetUniformLocation(cubeShader.Program, "objectColor");
 		GLint lightColorLoc = glGetUniformLocation(cubeShader.Program, "lightColor");
 		GLint lightPosLoc = glGetUniformLocation(cubeShader.Program, "lightPos");
-
-		//Une lumière indirecte par cube
-		GLint indirectLightPos1 = glGetUniformLocation(cubeShader.Program, "indirectLightPos1");				
+		
+		GLint indirectLightPos1 = glGetUniformLocation(cubeShader.Program, "indirectLightPos1");				//Une lumière indirecte par cube
 		GLint indirectLightPos2 = glGetUniformLocation(cubeShader.Program, "indirectLightPos2");
 		GLint indirectLightPos3 = glGetUniformLocation(cubeShader.Program, "indirectLightPos3");
 
 		GLint viwPosLoc = glGetUniformLocation(cubeShader.Program, "viewPos");
 
-		GLint accentuationLoc= glGetUniformLocation(cubeShader.Program, "accentuation");
 
 		
 		//Initialisation des attributs de couleur (pour le cube)
@@ -124,24 +126,36 @@ int main(){
 
 		// 5. Draw the object		
 		glBindVertexArray(VAO_w);
+		//glDrawArrays(GL_TRIANGLES, 0, 36); //pour un seul triangle
 		
-		int j = 1;
 		for(GLint i=0; i<3;i++){
-			
-			model = glm::rotate(model, angle*j*0.1f, glm::vec3(rxCube, ryCube, rzCube));
 			model = glm::translate(model, cubePositions[i]);
-			//*GLfloat*/ angle = 20.0f*i;
-			//model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
-			//model = glm::translate(model, glm::vec3(xCube, yCube, zCube));//*/
+			if(keys[GLFW_KEY_H]){
+				cubePositions[0].x=cubePositions[0].x+0.01f;
+			}
+			if(keys[GLFW_KEY_F]){
+				cubePositions[0].x=cubePositions[0].x-0.01f;
+			}
+			if(keys[GLFW_KEY_T]){
+				cubePositions[0].y=cubePositions[0].y+0.01f;
+			}
+			if(keys[GLFW_KEY_G]){
+				cubePositions[0].y=cubePositions[0].y-0.01f;
+			}
+			if(keys[GLFW_KEY_R]){
+				cubePositions[0].z=cubePositions[0].z-0.01f;
+			}
+			if(keys[GLFW_KEY_Y]){
+				cubePositions[0].z=cubePositions[0].z+0.01f;
+			}
+			GLfloat angle = 20.0f*i;
+			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glDrawArrays(GL_TRIANGLES, 0, 36);
-			j++;
 		}
 
-		setLum(accentuationLoc);
 
-
-		//rendu du cube lumiere
+		//draw light
 		lampShader.Use();
 		modelLoc=glGetUniformLocation(lampShader.Program, "modelLight");
 		viewLoc=glGetUniformLocation(lampShader.Program, "view");
@@ -159,7 +173,6 @@ int main(){
 		//======================================================================================
 		//échange les buffers
 		glfwSwapBuffers(window);
-
 	}
 
 	//libere la memoire allouee aux buffers et vertex array
@@ -170,7 +183,7 @@ int main(){
 	return 0;
 }
 
-//Fonction permettant de fermer la fenêtre si on appuie sur 'Echap'
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -183,15 +196,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			keys[key] = false;  
 	}
 }
-
-//Fonction permettant de déplacer la caméra
 void do_movement()
-{	
-	if(keys[GLFW_KEY_W])
+{
+	// Camera controls
+	if(keys[GLFW_KEY_Z])
 		camera.ProcessKeyboard(FORWARD, deltaTime);
 	if(keys[GLFW_KEY_S])
 		camera.ProcessKeyboard(BACKWARD, deltaTime);
-	if(keys[GLFW_KEY_A])
+	if(keys[GLFW_KEY_Q])
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if(keys[GLFW_KEY_D])
 		camera.ProcessKeyboard(RIGHT, deltaTime);
@@ -201,7 +213,6 @@ void do_movement()
 		camera.ProcessKeyboard(UP,deltaTime);
 }
 
-//Fonction permettant d'orienter la caméra dans une direction
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (firstMouse)
@@ -218,8 +229,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 	camera.ProcessMouseMovement(xoffset, yoffset);
 }
-
-//Fonction permettant de  zoomer à l'aide du scroll
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
@@ -247,41 +256,23 @@ void setRot()
 {
 	if (keys[GLFW_KEY_V])//rotation sur X
 	{
-		angleX = angleX+0.05f;
-		angle = angleX;
-		rxCube = 1.0f;
-		ryCube = 0.0f;
-		rzCube = 0.0f;
-
+		angle += 0.01f;
+		rxCube = cos(angle) + (RxCube^2)*(1 - cos(angle));
+		ryCube = ryCube*rxCube*(1 - cos(angle)) + rzCube*sin(angle);
+		rzCube = rxCube*rzCube*(1 - cos(angle)) - ryCube*sin(angle);
 	}
 	if (keys[GLFW_KEY_B])//rotation sur Y
 	{
-		angleY = angleY+0.05f;
-		angle = angleY;		
-		rxCube = 0.0f;
-		ryCube = 1.0f;
-		rzCube = 0.0f;
-
+		angle += 0.01f;
+		rxCube = ryCube*rxCube*(1 - cos(angle)) - rzCube*sin(angle);
+		ryCube = cos(angle) + (RyCube ^ 2)*(1 - cos(angle));
+		rzCube = ryCube*rzCube*(1 - cos(angle)) - rxCube*sin(angle);
 	}
 	if (keys[GLFW_KEY_N])//rotation sur Z
 	{
-		angleZ = angleZ+0.05f;
-		angle = angleZ;
-		rxCube = 0.0f;
-		ryCube = 0.0f;
-		rzCube = 1.0f;
-
-	}
-}
-
-//Fonction permettant d'accentuer ou non la réfléxion de la lumière
-void setLum(GLint accentuationLoc){
-	if(keys[GLFW_KEY_KP_ADD]){//touche +
-		accentuation+=0.01f;
-		glUniform1f(accentuationLoc, accentuation);
-	}
-	if(keys[GLFW_KEY_KP_SUBTRACT] && accentuation >=0.0f){ //touche -
-		accentuation-=0.01f;
-		glUniform1f(accentuationLoc, accentuation);
+		angle += 0.01f;
+		rxCube = rxCube*rzCube*(1 - cos(angle)) + ryCube*sin(angle);
+		ryCube = ryCube*rzCube*(1 - cos(angle)) - rxCube*sin(angle);
+		rzCube = cos(angle) + (RzCube ^ 2)*(1 - cos(angle));
 	}
 }
